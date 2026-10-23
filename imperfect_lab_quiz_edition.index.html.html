@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不完美診所 Imperfect Lab - 不完美情緒原型測驗</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#F4F1EA',
+                        paper: '#EAE5D9',
+                        ink: '#1A1A1A',
+                        accentRed: '#E65B52',
+                        accentBlue: '#3B60E4',
+                        accentYellow: '#F3C623',
+                        accentPurple: '#8E44AD',
+                        accentGreen: '#2ECC71'
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                        hand: ['Caveat', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F4F1EA;
+            color: #1A1A1A;
+            overflow-x: hidden;
+        }
+
+        .bg-dots {
+            background-image: radial-gradient(#1A1A1A 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .scribble-line {
+            position: relative;
+            display: inline-block;
+        }
+        .scribble-line::after {
+            content: '';
+            position: absolute;
+            left: -5%;
+            top: 50%;
+            width: 110%;
+            height: 4px;
+            background: #E65B52;
+            transform: rotate(-2deg);
+            border-radius: 50%;
+        }
+
+        /* Smooth Progress Bar Transitions */
+        .progress-bar-fill {
+            transition: width 0.4s ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F4F1EA;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1A1A1A;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="font-sans bg-dots min-h-screen flex flex-col justify-between selection:bg-accentYellow selection:text-ink">
+
+    <!-- Header Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-cream/90 backdrop-blur-md border-b-2 border-ink py-4 px-6 md:px-12 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <span class="text-2xl font-black tracking-tighter bg-ink text-cream px-2 py-1 rotate-1 inline-block">IMPERFECT</span>
+            <span class="font-bold text-xl tracking-tight hidden sm:inline">LAB 心理測驗館</span>
+        </div>
+        <div class="text-xs md:text-sm font-bold bg-accentYellow border border-ink px-3 py-1 rounded-full">
+            <i class="fa-solid fa-brain mr-1"></i> 不完美反應原型分析
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="pt-28 pb-16 px-4 md:px-8 max-w-4xl mx-auto flex-1 flex flex-col justify-center">
+
+        <!-- STEP 1: Quiz Intro Screen -->
+        <div id="quiz-intro" class="bg-white border-2 border-ink p-8 md:p-12 rounded-2xl shadow-[10px_10px_0px_0px_rgba(26,26,26,1)] text-center transition-all">
+            <div class="inline-block bg-accentRed text-white font-bold text-xs px-3 py-1 rounded-full uppercase tracking-widest mb-4 -rotate-1">
+                Mental Assessment Test
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black mb-6 leading-tight">
+                當不完美發生時，<br>
+                你是哪一種<span class="scribble-line text-accentBlue">情緒怪物</span>？
+            </h1>
+            <p class="text-gray-700 text-base md:text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+                打錯字、說錯話、害怕沒做好而拖延、或是發訊息反覆塗改……<br>
+                這些生活與溝通中的小失誤，正在如何影響你的行為與心情？<br>
+                回答 6 個情境問題，測出你的<b>「不完美防禦機制」</b>與代表你的醜萌 IP 角色！
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-left text-xs text-gray-600 border-y border-gray-200 py-4">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-clock text-accentRed text-base"></i>
+                    <span>預估時間：3 分鐘</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-accentBlue text-base"></i>
+                    <span>題目數量：10 題情境測驗</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-mask text-accentYellow text-base"></i>
+                    <span>測驗結果：4 種醜萌角色</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-accentPurple text-base"></i>
+                    <span>附帶專屬情緒處方箋</span>
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full sm:w-auto bg-ink text-cream font-bold text-lg px-10 py-4 rounded-xl border-2 border-ink shadow-[4px_4px_0px_0px_rgba(230,91,82,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all inline-flex items-center justify-center gap-3">
+                開始進行測驗 <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- STEP 2: Active Quiz Screen -->
+        <div id="quiz-question-card" class="hidden bg-white border-2 border-ink p-6 md:p-10 rounded-2xl shadow-[10px_10px_0px_0px_rgba(26,26,26,1)] transition-all">
+            <!-- Progress Header -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2 font-mono text-xs font-bold text-gray-500">
+                    <span id="question-category" class="bg-paper text-ink px-2 py-0.5 rounded border border-ink">SECTION 1: 生活失誤</span>
+                    <span id="question-counter">QUESTION 1 / 6</span>
+                </div>
+                <!-- Progress Bar -->
+                <div class="w-full bg-paper rounded-full h-3 border border-ink overflow-hidden">
+                    <div id="progress-bar" class="bg-accentRed h-3 progress-bar-fill w-[16%]"></div>
+                </div>
+            </div>
+
+            <!-- Question Area -->
+            <div class="mb-8">
+                <h2 id="question-title" class="text-xl md:text-2xl font-black mb-3 text-ink leading-snug">
+                    情境載入中……
+                </h2>
+                <p id="question-desc" class="text-gray-600 text-sm md:text-base leading-relaxed bg-paper/50 p-4 rounded-xl border border-gray-200">
+                    情境描述載入中……
+                </p>
+            </div>
+
+            <!-- Answer Options -->
+            <div id="options-list" class="space-y-3">
+                <!-- Options populated dynamically via JS -->
+            </div>
+        </div>
+
+        <!-- STEP 3: Result Analysis Screen -->
+        <div id="quiz-result-card" class="hidden bg-white border-2 border-ink p-6 md:p-10 rounded-2xl shadow-[12px_12px_0px_0px_rgba(26,26,26,1)] transition-all">
+            <div class="text-center mb-8 border-b border-ink/20 pb-6">
+                <span class="bg-accentYellow border border-ink px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">診斷結果出爐</span>
+                <h2 class="text-3xl md:text-5xl font-black mt-3 mb-2" id="result-title">你的不完美原型分析</h2>
+                <p class="text-gray-500 text-sm">每個人的內心都住著一隻因為害怕失誤而誕生的小怪物，這是屬於你的情緒化身：</p>
+            </div>
+
+            <!-- Monster IP Profile Header -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center mb-8 bg-paper p-6 rounded-xl border-2 border-ink">
+                <!-- Mascot Visual Badge -->
+                <div class="flex flex-col items-center text-center">
+                    <div id="result-avatar" class="w-28 h-28 bg-white rounded-full flex items-center justify-center border-2 border-ink shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] mb-3">
+                        <!-- Dynamic Icon -->
+                    </div>
+                    <span id="result-badge" class="bg-ink text-cream text-xs font-bold px-3 py-1 rounded-full">型號 #01</span>
+                </div>
+                <!-- Monster Intro -->
+                <div class="md:col-span-2">
+                    <h3 class="text-2xl font-black text-ink mb-2" id="result-monster-name">怪罪阿毛 (Self-Blamer)</h3>
+                    <p class="text-sm font-bold text-accentRed mb-3" id="result-tagline">「只要一有失誤，肯定全都是我的錯……」</p>
+                    <p class="text-xs md:text-sm text-gray-700 leading-relaxed" id="result-description">
+                        當不完美發生時，你會在第一時間將問題歸咎於自己。你擁有極強的責任感與自我反省能力，但這也常常讓你陷入無限的自責沼澤，忽視了客觀環境的影響。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Diagnostic Breakdown Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Behavior Traits -->
+                <div class="border-2 border-ink p-5 rounded-xl bg-cream">
+                    <h4 class="font-bold text-base mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass text-accentBlue"></i> 典型行為反應
+                    </h4>
+                    <ul id="result-behaviors" class="space-y-2 text-xs md:text-sm text-gray-700 list-disc list-inside">
+                        <!-- Dynamic LI List -->
+                    </ul>
+                </div>
+
+                <!-- Communication Style -->
+                <div class="border-2 border-ink p-5 rounded-xl bg-cream">
+                    <h4 class="font-bold text-base mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-comments text-accentYellow"></i> 人際溝通盲點
+                    </h4>
+                    <ul id="result-communication" class="space-y-2 text-xs md:text-sm text-gray-700 list-disc list-inside">
+                        <!-- Dynamic LI List -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Prescription Box -->
+            <div class="bg-ink text-cream border-2 border-ink p-6 rounded-xl mb-8 relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 opacity-10 text-8xl text-white">
+                    <i class="fa-solid fa-prescription-bottle-medical"></i>
+                </div>
+                <span class="text-xs font-mono font-bold text-accentYellow uppercase tracking-widest">LAB PRESCRIPTION</span>
+                <h4 class="text-xl font-bold mt-1 mb-3 text-white">💊 不完美診所的專屬情緒處方箋</h4>
+                <p id="result-prescription" class="text-xs md:text-sm text-gray-300 leading-relaxed">
+                    試著建立「3秒法則」：失誤發生時，先深深呼吸三次，告訴自己：「這是一個意外，並不代表我這個人很糟。」將注意力從「責怪自己」轉移到「下一步能做什麼」。
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="restartQuiz()" class="bg-cream text-ink font-bold px-8 py-3 rounded-xl border-2 border-ink hover:bg-paper transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> 重新測驗
+                </button>
+                <button onclick="shareResult()" class="bg-accentBlue text-white font-bold px-8 py-3 rounded-xl border-2 border-ink shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] hover:translate-x-0.5 hover:translate-y-0.5 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-share-nodes"></i> 分享我的結果
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-ink text-cream border-t-2 border-ink py-6 px-6 text-center text-xs text-gray-400">
+        <p>© 2026 Imperfect Lab 不完美診所. 擁抱瑕疵，學會與不完美共處。</p>
+    </footer>
+
+    <!-- Interactive JavaScript Logic -->
+    <script>
+        // -------------------------------------------------------------------
+        // QUIZ DATA STRUCTURE (10 Comprehensive Situational Questions)
+        // -------------------------------------------------------------------
+        const quizData = [
+            {
+                category: "SECTION 1: 生活小失誤",
+                title: "1. 早上準備出門時，你不小心把咖啡灑在白襯衫上，眼看就要遲到了……",
+                desc: "離重要會議只剩 20 分鐘，你被迫換衣服，這時你內心的第一反應是？",
+                options: [
+                    { text: "A. 「我怎麼這麼笨！今天肯定一整天都會很慘……」心中充滿強烈的自責。", type: "A" },
+                    { text: "B. 陷入糾結，一直換衣服又覺得哪件都不對，結果拖延更久才出門。", type: "B" },
+                    { text: "C. 迅速擦拭並換上另一件，對自己說：「還好不是咖啡倒在電腦上，小事一樁！」", type: "C" },
+                    { text: "D. 默默取消今天的社交或會議，因為覺得狀態不完美、不想見人。", type: "D" }
+                ]
+            },
+            {
+                category: "SECTION 1: 工作與任務",
+                title: "2. 當你收到一個全新且沒有嘗試過的重要專案邀請……",
+                desc: "主管或夥伴問你願不願意擔任主導角色，但你對這個領域並不完全精通。",
+                options: [
+                    { text: "A. 害怕如果做不好會讓大家失望，猶豫再三最後找理由婉拒。", type: "D" },
+                    { text: "B. 接下任務，但因為太害怕成果不完美，遲遲無法下筆開始第一步。", type: "B" },
+                    { text: "C. 邊做邊學，並且大方告訴夥伴：「我是第一次嘗試，如果有錯請大家多指教！」", type: "C" },
+                    { text: "D. 強忍壓力接下，但每天焦慮爆棚，只要一遇到挫折就覺得是自己能力不夠。", type: "A" }
+                ]
+            },
+            {
+                category: "SECTION 2: 溝通與表達",
+                title: "3. 你在百人通訊群組發布消息，結果自動選字發出了尷尬的錯別字……",
+                desc: "原本要打「好的收到，謝謝！」，不小心打成「好的收到，笨蛋！」，且已過收回時間。",
+                options: [
+                    { text: "A. 補上一句自嘲「輸入法搞事！大家笑笑就好～」，輕鬆帶過。", type: "C" },
+                    { text: "B. 瞬間頭皮發麻，狂發 5 條訊息解釋並瘋狂道歉，深怕有人生氣。", type: "A" },
+                    { text: "C. 心情瞬間掉到谷底，甚至興起想要直接退出群組避難的衝動。", type: "D" },
+                    { text: "D. 盯著那行字看很久，反覆修改之後要發的所有訊息，確保不再出錯。", type: "B" }
+                ]
+            },
+            {
+                category: "SECTION 2: 人際互動",
+                title: "4. 你對朋友或同事的某個決策有不同想法，但你擔心說出來會破壞氣氛……",
+                desc: "大家都在歡樂地討論方案，只有你發現了一個潛在的邏輯漏洞。",
+                options: [
+                    { text: "A. 反覆在心中修飾草稿十幾次，最後因為錯過發言時機而選擇默默保持沉默。", type: "B" },
+                    { text: "B. 直接選擇不說，心想「反正我的想法也不一定對，說錯更尷尬」。", type: "D" },
+                    { text: "C. 找機會用溫和、真誠的方式提出：「我注意到一個小細節，大家看看有沒有影響？」", type: "C" },
+                    { text: "D. 硬著頭皮說出來，但說完之後一整天都在後悔：「我是不是太直白、得罪人了？」", type: "A" }
+                ]
+            },
+            {
+                category: "SECTION 3: 情緒與細節",
+                title: "5. 你辛苦完成了一份 20 頁的簡報，報告完獲得大家好評，但事後你發現第 5 頁有錯字……",
+                desc: "雖然沒有人注意到或提及這個錯誤，但你發現了它。",
+                options: [
+                    { text: "A. 覺得整份簡報都被這個錯字給毀了，完全無法享受大家對你的讚美。", type: "A" },
+                    { text: "B. 馬上把檔案下載回來擦拭修改，發誓下次一定要檢查 100 遍再送出。", type: "B" },
+                    { text: "C. 一笑置之，心想「人非聖賢，整體目標有達成最重要！」。", type: "C" },
+                    { text: "D. 感到深深的挫敗感，下次再有報告機會時會更加抗拒承接。", type: "D" }
+                ]
+            },
+            {
+                category: "SECTION 3: 計劃與變數",
+                title: "6. 期待已久的週末戶外野餐，出發前天公不作美下起了暴雨……",
+                desc: "精心安排的行程被迫中斷，面對突如其來的變化，你的心情是？",
+                options: [
+                    { text: "A. 覺得今天運氣差透了，整天心情全毀，乾脆躺在床上發呆廢一天。", type: "D" },
+                    { text: "B. 轉向旁邊開著的室內咖啡館，買杯熱咖啡聽雨聲，享受意外的悠閒。", type: "C" },
+                    { text: "C. 瘋狂開啟 Map 搜尋備案，一定要把時間填滿才不會有「失控感」。", type: "B" },
+                    { text: "D. 怪罪自己當初為什麼沒多查天氣預報，覺得是自己規劃不周。", type: "A" }
+                ]
+            },
+            {
+                category: "SECTION 4: 人際回應",
+                title: "7. 當你收到一條語氣看起來有點冷淡或嚴肅的訊息……",
+                desc: "對方只回了「嗯，知道了。」三個字，沒有任何表情符號。",
+                options: [
+                    { text: "A. 腦中瞬間排演各種小劇場：「我是不是說錯話惹他不高興了？」", type: "A" },
+                    { text: "B. 花半小時打字修改，準備傳一大串溫和補救訊息過去。", type: "B" },
+                    { text: "C. 覺得對方可能只是在忙，等見面或之後再順其自然回應。", type: "C" },
+                    { text: "D. 覺得尷尬且有壓力，決定乾脆已讀不回或避開近期與對方的接觸。", type: "D" }
+                ]
+            },
+            {
+                category: "SECTION 4: 興趣與學習",
+                title: "8. 你報名了一堂全新的體驗課程（如繪畫、烹飪或語言），第一堂課表現有些笨拙……",
+                desc: "旁邊的同學看起來都很熟練，只有你手忙腳亂或者做出的成品不夠好看。",
+                options: [
+                    { text: "A. 感到非常羞恥，覺得自己缺乏天份，回家後萌生退課的想法。", type: "D" },
+                    { text: "B. 下課後上網買齊所有專業工具，熬夜狂練，下定決心下次不能再丟臉。", type: "B" },
+                    { text: "C. 覺得過程很有趣，主動向旁邊厲害的同學請教，不介意展現新手狀態。", type: "C" },
+                    { text: "D. 覺得自己拖累了大家的進度，整節課都沉浸在自我懷疑的低落心情中。", type: "A" }
+                ]
+            },
+            {
+                category: "SECTION 5: 社交邀約",
+                title: "9. 朋友臨時邀約你去一個你不太熟識的新聚會，你不是很確定去了該聊什麼……",
+                desc: "你想參與但又很擔心場面尷尬、自己表現不自然。",
+                options: [
+                    { text: "A. 預想了一整套「完美社交應答範本」，但光是想像就累得不想去了。", type: "B" },
+                    { text: "B. 怕去了沒話講很丟臉，直接找理由拒絕，窩回安全舒適圈。", type: "D" },
+                    { text: "C. 抱著「去聽聽大家聊天也不錯」的心態參加，放鬆做自己。", type: "C" },
+                    { text: "D. 勉強去了，但過程中只要有一秒冷場，就覺得是自己不會聊天的錯。", type: "A" }
+                ]
+            },
+            {
+                category: "SECTION 5: 追求成果",
+                title: "10. 回顧過去幾個月，當你有一個很想嘗試的小目標（如寫部落格、運動、學新技能）時……",
+                desc: "這項計畫目前的進展狀態通常是？",
+                options: [
+                    { text: "A. 因為想等到「完全準備好、時間充裕」再開始，所以一直還在規劃階段。", type: "B" },
+                    { text: "B. 試了一下發現沒達到預期的成果，覺得自己做不好就直接放棄了。", type: "D" },
+                    { text: "C. 已經開始做了！就算斷斷續續或做得不夠精緻，只要有微小進步就很開心。", type: "C" },
+                    { text: "D. 邊做邊覺得自己不夠好，每次看別人的優秀作品就覺得深受挫折。", type: "A" }
+                ]
+            }
+        ];
+
+        // -------------------------------------------------------------------
+        // CHARACTER PROFILES (4 Ugly-Cute IP Archetypes)
+        // -------------------------------------------------------------------
+        const archetypeProfiles = {
+            A: {
+                badge: "原型型號 #01",
+                name: "怪罪阿毛 (Self-Blamer)",
+                tagline: "「一有錯都是我的錯，我不夠好……」",
+                icon: '<i class="fa-solid fa-face-sad-tear text-5xl text-accentRed"></i>',
+                description: "當生活出現任何不如意或小失誤時，你的大腦會第一時間把責任攬在自己身上。你擁有高度的責任感與敏銳的情緒感知，但這也讓你容易陷入「全盤否定自己」的負面循環。",
+                behaviors: [
+                    "習慣將偶然的小意外歸咎於自己的能力或態度不足。",
+                    "受到他人讚美時難以坦然接受，反而先看到自己的瑕疵。",
+                    "容易因為單一錯誤而否定過去 99 次的成功付出。"
+                ],
+                communication: [
+                    "溝通時常過度道歉（即便根本不是你的錯）。",
+                    "害怕展現真實想法後被討厭，常委屈自己順從他人。"
+                ],
+                prescription: "【停止自我批判處方】失誤不代表你這個人有問題。下次想說「對不起都是我不好」時，試著改說「謝謝你的包容，我們一起看看怎麼解決！」。"
+            },
+            B: {
+                badge: "原型型號 #02",
+                name: "刪除狂擦擦 (Over-Editor)",
+                tagline: "「刪掉重來！這句還不夠完美！」",
+                icon: '<i class="fa-solid fa-eraser text-5xl text-accentYellow"></i>',
+                description: "你對細節有著極高的追求，極度害怕在他人面前展現出「未經修飾」的一面。無論是寫信、發訊息還是做專案，你總是習慣反覆塗改、修飾，甚至因而錯過了最佳時機。",
+                behaviors: [
+                    "傳訊息前會反覆編輯打字，修改超過三遍以上。",
+                    "容易陷入「還沒準備好」的無限延遲與拖延中。",
+                    "過度打磨作品，有時反而抹煞了最原始的熱情與特色。"
+                ],
+                communication: [
+                    "因為太在意表達得是否得體，常在討論中錯過說話時機。",
+                    "訊息讀了很久才回，因為一直在思考「完美的回應」。"
+                ],
+                prescription: "【完成勝於完美處方】允許自己展現粗糙的真誠。試著進行「檢查一遍就發送」的日常小練習，體驗「不完美也不會怎樣」的輕鬆感。"
+            },
+            C: {
+                badge: "原型型號 #03",
+                name: "豁達小精靈 (Resilient Spriter)",
+                tagline: "「小失誤也是生活的一部分，笑笑就過啦！」",
+                icon: '<i class="fa-solid fa-wand-magic-sparkles text-5xl text-accentGreen"></i>',
+                description: "恭喜你！你擁有極高的情緒復原力（Resilience）。你深知生活不可能完全按照劇本走，能夠坦然接受小失誤與意外，並用幽默感與彈性輕鬆化解。",
+                behaviors: [
+                    "能快速將注意力從「問題本身」轉移到「解決方案」。",
+                    "勇於嘗試未知的領域，不害怕在過程中犯錯。",
+                    "懂得自嘲，能把尷尬的失誤轉化為有趣的故事。"
+                ],
+                communication: [
+                    "表達真誠直率，不怕說出「我不知道」或「我做錯了」。",
+                    "讓人感覺親切好相處，容易建立真實的人際連結。"
+                ],
+                prescription: "【維持自在心態處方】繼續保持這份寶貴的彈性與包容力！你也可以成為身邊焦慮朋友的溫暖後盾，感染他們放鬆下來。"
+            },
+            D: {
+                badge: "原型型號 #04",
+                name: "卡關角落怪 (Avoidant Turtle)",
+                tagline: "「只要不出門不開口，就不會有機會出錯。」",
+                icon: '<i class="fa-solid fa-shield-halved text-5xl text-accentBlue"></i>',
+                description: "因為太害怕面對犯錯帶來的尷尬、失望或否定，你選擇用「退縮與沉默」來保護自己。只要不參加、不承接、不開口，就不需要承受不完美的風險。",
+                behaviors: [
+                    "面對不熟悉的新任務時，第一反應通常是婉拒或逃避。",
+                    "遇到尷尬或失誤時，傾向選擇躲起來或直接放棄。",
+                    "因為害怕破壞關係，寧可選擇壓抑自己的真實需求。"
+                ],
+                communication: [
+                    "在社交場合作選擇保持沉默，扮演「隱形人」。",
+                    "遇到衝突或誤解時，習慣用「算了，隨便吧」來結束話題。"
+                ],
+                prescription: "【微小勇敢處方】逃避雖然安全，但也讓你錯過了許多美好的連結。試著從小事開始嘗試：今天允許自己說一句「我其實是這樣想的」。"
+            }
+        };
+
+        // -------------------------------------------------------------------
+        // QUIZ STATE & LOGIC ENGINE
+        // -------------------------------------------------------------------
+        let currentQuestion = 0;
+        let userScores = { A: 0, B: 0, C: 0, D: 0 };
+        let isProcessing = false;
+
+        function startQuiz() {
+            document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('quiz-question-card').classList.remove('hidden');
+            currentQuestion = 0;
+            userScores = { A: 0, B: 0, C: 0, D: 0 };
+            isProcessing = false;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = quizData[currentQuestion];
+            const totalQ = quizData.length;
+
+            // Update UI elements
+            document.getElementById('question-category').innerText = q.category;
+            document.getElementById('question-counter').innerText = `QUESTION ${currentQuestion + 1} / ${totalQ}`;
+            document.getElementById('question-title').innerText = q.title;
+            document.getElementById('question-desc').innerText = q.desc;
+
+            // Update Progress Bar
+            const progressPercent = ((currentQuestion + 1) / totalQ) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Populate Options cleanly (Ensures no persistent selected state across questions)
+            const optionsContainer = document.getElementById('options-list');
+            optionsContainer.innerHTML = q.options.map((opt, idx) => `
+                <button onclick="handleOptionSelect('${opt.type}', this)" class="option-btn w-full text-left p-4 rounded-xl border-2 border-ink bg-cream hover:bg-accentYellow/20 hover:border-ink active:scale-[0.99] transition-all duration-200 flex items-center justify-between group">
+                    <span class="font-bold text-gray-800 text-sm md:text-base pointer-events-none">${opt.text}</span>
+                    <i class="fa-solid fa-circle-chevron-right text-gray-400 group-hover:text-ink group-hover:translate-x-1 transition-all pointer-events-none"></i>
+                </button>
+            `).join('');
+
+            isProcessing = false;
+        }
+
+        function handleOptionSelect(type, targetBtn) {
+            if (isProcessing) return; // Prevent double taps during transition
+            isProcessing = true;
+
+            // Highlight selected option visually
+            targetBtn.classList.remove('bg-cream');
+            targetBtn.classList.add('bg-accentYellow', 'shadow-[3px_3px_0px_0px_rgba(26,26,26,1)]');
+
+            userScores[type]++;
+
+            // Smooth delayed transition to next question or result
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    renderQuestion();
+                } else {
+                    showQuizResult();
+                }
+            }, 300);
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-question-card').classList.add('hidden');
+            document.getElementById('quiz-result-card').classList.remove('hidden');
+
+            // Determine dominant archetype
+            let highestType = 'A';
+            let maxScore = -1;
+            for (const [type, score] of Object.entries(userScores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    highestType = type;
+                }
+            }
+
+            const profile = archetypeProfiles[highestType];
+
+            // Render Result Card Content
+            document.getElementById('result-badge').innerText = profile.badge;
+            document.getElementById('result-monster-name').innerText = profile.name;
+            document.getElementById('result-tagline').innerText = profile.tagline;
+            document.getElementById('result-avatar').innerHTML = profile.icon;
+            document.getElementById('result-description').innerText = profile.description;
+            document.getElementById('result-prescription').innerText = profile.prescription;
+
+            // Render Behavior LI elements
+            document.getElementById('result-behaviors').innerHTML = profile.behaviors
+                .map(item => `<li>${item}</li>`).join('');
+
+            // Render Communication LI elements
+            document.getElementById('result-communication').innerHTML = profile.communication
+                .map(item => `<li>${item}</li>`).join('');
+
+            // Scroll cleanly to top of results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restartQuiz() {
+            document.getElementById('quiz-result-card').classList.add('hidden');
+            document.getElementById('quiz-intro').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function shareResult() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '不完美診所情緒測驗',
+                    text: '我在【不完美診所】測出了我的不完美原型！快來看看你是哪種情緒怪物？',
+                    url: window.location.href,
+                }).catch(() => {});
+            } else {
+                alert('已將測驗連結複製到剪貼簿！分享給朋友一起測驗吧！');
+            }
+        }
+    </script>
+</body>
+</html>
